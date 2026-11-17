@@ -90,7 +90,7 @@ func _build_skin(data: Dictionary, origin: Vector3) -> void:
 
 	# Boots, articulated-looking legs, knee pads and utility belt.
 	for side in [-1.0, 1.0]:
-		var x := side * 0.115
+		var x: float = float(side) * 0.115
 		_capsule(player, legs, Vector3(x, 0.49, 0.0), 0.76, 0.105)
 		_box(player, boot, Vector3(x, 0.105, 0.055), Vector3(0.205, 0.16, 0.32))
 		_box(player, trim if style in [2, 6] else gear, Vector3(x, 0.48, 0.108), Vector3(0.19, 0.13, 0.055))
