@@ -16,6 +16,7 @@ const PEOPLE := [
 ]
 
 func _ready() -> void:
+	print("CHARACTER_GALLERY_READY env=", OS.get_environment("CAPTURE_CHARACTERS"), " people=", PEOPLE.size())
 	_build_stage()
 	for i in PEOPLE.size():
 		var row := i / 4
@@ -166,7 +167,9 @@ func _build_stage() -> void:
 		add_child(marker)
 
 func _capture_preview() -> void:
-	await get_tree().create_timer(3.0).timeout
+	print("CHARACTER_CAPTURE_WAITING")
+	await get_tree().create_timer(2.0).timeout
+	await RenderingServer.frame_post_draw
 	var image := get_viewport().get_texture().get_image()
 	var output_path := ProjectSettings.globalize_path("res://Screenshots/eight_characters_godot.png")
 	var error := image.save_png(output_path)
