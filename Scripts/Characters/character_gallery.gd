@@ -7,14 +7,14 @@ const HITBOX_RADIUS := 0.32
 const HITBOX_HEIGHT := 1.75
 
 const SKINS := [
-	{"name":"SKIN 01","skin":Color("#b87954"),"hair":Color("#30231e"),"top":Color("#777b63"),"legs":Color("#393d39"),"trim":Color("#b7a27b"),"gear":Color("#51483a"),"style":0},
-	{"name":"SKIN 02","skin":Color("#d49a70"),"hair":Color("#4b3025"),"top":Color("#526c59"),"legs":Color("#66513b"),"trim":Color("#b4a16e"),"gear":Color("#6c5941"),"style":1},
-	{"name":"SKIN 03","skin":Color("#a96f50"),"hair":Color("#211e1b"),"top":Color("#414b43"),"legs":Color("#303831"),"trim":Color("#9a9b77"),"gear":Color("#292f2d"),"style":2},
-	{"name":"SKIN 04","skin":Color("#c58b68"),"hair":Color("#382a22"),"top":Color("#a45e37"),"legs":Color("#414b5a"),"trim":Color("#d0b46b"),"gear":Color("#45494b"),"style":3},
-	{"name":"SKIN 05","skin":Color("#e0b18f"),"hair":Color("#38251f"),"top":Color("#806b65"),"legs":Color("#4c4648"),"trim":Color("#c5a88b"),"gear":Color("#514044"),"style":4},
-	{"name":"SKIN 06","skin":Color("#bd8768"),"hair":Color("#251c19"),"top":Color("#687b63"),"legs":Color("#514c3c"),"trim":Color("#b8a276"),"gear":Color("#4d5948"),"style":5},
-	{"name":"SKIN 07","skin":Color("#9d684e"),"hair":Color("#211c1a"),"top":Color("#414b43"),"legs":Color("#303831"),"trim":Color("#a4a17b"),"gear":Color("#252b2b"),"style":6},
-	{"name":"SKIN 08","skin":Color("#d8a17f"),"hair":Color("#67402d"),"top":Color("#a45e37"),"legs":Color("#414b5a"),"trim":Color("#d0b46b"),"gear":Color("#5a5144"),"style":7}
+	{"name":"SKIN 01","skin":Color("#b87954"),"hair":Color("#30231e"),"top":Color("#777b63"),"legs":Color("#393d39"),"trim":Color("#b7a27b"),"gear":Color("#51483a"),"style":0,"body":"masc"},
+	{"name":"SKIN 02","skin":Color("#d49a70"),"hair":Color("#4b3025"),"top":Color("#526c59"),"legs":Color("#66513b"),"trim":Color("#b4a16e"),"gear":Color("#6c5941"),"style":1,"body":"fem"},
+	{"name":"SKIN 03","skin":Color("#a96f50"),"hair":Color("#211e1b"),"top":Color("#414b43"),"legs":Color("#303831"),"trim":Color("#9a9b77"),"gear":Color("#292f2d"),"style":2,"body":"masc"},
+	{"name":"SKIN 04","skin":Color("#c58b68"),"hair":Color("#382a22"),"top":Color("#a45e37"),"legs":Color("#414b5a"),"trim":Color("#d0b46b"),"gear":Color("#45494b"),"style":3,"body":"fem"},
+	{"name":"SKIN 05","skin":Color("#e0b18f"),"hair":Color("#38251f"),"top":Color("#806b65"),"legs":Color("#4c4648"),"trim":Color("#c5a88b"),"gear":Color("#514044"),"style":4,"body":"masc"},
+	{"name":"SKIN 06","skin":Color("#bd8768"),"hair":Color("#251c19"),"top":Color("#687b63"),"legs":Color("#514c3c"),"trim":Color("#b8a276"),"gear":Color("#4d5948"),"style":5,"body":"fem"},
+	{"name":"SKIN 07","skin":Color("#9d684e"),"hair":Color("#211c1a"),"top":Color("#414b43"),"legs":Color("#303831"),"trim":Color("#a4a17b"),"gear":Color("#252b2b"),"style":6,"body":"masc"},
+	{"name":"SKIN 08","skin":Color("#d8a17f"),"hair":Color("#67402d"),"top":Color("#a45e37"),"legs":Color("#414b5a"),"trim":Color("#d0b46b"),"gear":Color("#5a5144"),"style":7,"body":"fem"}
 ]
 
 func _ready() -> void:
@@ -98,10 +98,20 @@ func _build_skin(data: Dictionary, origin: Vector3) -> void:
 	_box(player, trunks, Vector3(0, 0.665, 0), Vector3(0.39, 0.10, 0.245))
 	_box(player, dark, Vector3(0, 0.965, 0.132), Vector3(0.405, 0.025, 0.018))
 
-	# Torso desnudo y brazos; se conserva la misma proporción en los ocho skins.
-	_capsule(player, skin, Vector3(0, 1.205, 0), 0.64, 0.205)
-	for side in [-1.0, 1.0]:
-		_sphere(player, skin, Vector3(side * 0.205, 1.39, 0), Vector3(0.125, 0.12, 0.13))
+	# Torso anatómico más estilizado: abdomen plano y cintura definida.
+	# Las variaciones son únicamente visuales; la cápsula de colisión no cambia.
+	var feminine := str(data.body) == "fem"
+	if feminine:
+		_sphere(player, skin, Vector3(0, 1.255, 0), Vector3(0.172, 0.245, 0.118))
+		_sphere(player, skin, Vector3(0, 1.405, 0), Vector3(0.205, 0.175, 0.125))
+		for side in [-1.0, 1.0]:
+			_sphere(player, skin, Vector3(side * 0.098, 1.345, 0.103), Vector3(0.083, 0.075, 0.055))
+			_sphere(player, skin, Vector3(side * 0.205, 1.405, 0), Vector3(0.095, 0.105, 0.105))
+	else:
+		_sphere(player, skin, Vector3(0, 1.255, 0), Vector3(0.18, 0.245, 0.12))
+		_sphere(player, skin, Vector3(0, 1.415, 0), Vector3(0.225, 0.17, 0.135))
+		for side in [-1.0, 1.0]:
+			_sphere(player, skin, Vector3(side * 0.22, 1.405, 0), Vector3(0.115, 0.12, 0.12))
 		_capsule(player, skin, Vector3(side * 0.255, 1.19, 0.0), 0.56, 0.083, Vector3(0, 0, side * -0.10))
 		_capsule(player, skin, Vector3(side * 0.27, 0.855, 0.015), 0.20, 0.061)
 		_sphere(player, skin, Vector3(side * 0.27, 0.765, 0.025), Vector3(0.067, 0.07, 0.065))
