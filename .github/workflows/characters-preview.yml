@@ -1,0 +1,39 @@
+name: Godot character gallery preview
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'Scripts/Characters/**'
+      - 'DemoScenes/Characters/**'
+      - '.github/workflows/characters-preview.yml'
+      - 'project.godot'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  render:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install display and OpenGL software renderer
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y xvfb libgl1-mesa-dri libglx-mesa0 unzip wget
+      - name: Install Godot 4.4.1
+        run: |
+          wget -q https://github.com/godotengine/godot/releases/download/4.4.1-stable/Godot_v4.4.1-stable_linux.x86_64.zip
+          unzip -q Godot_v4.4.1-stable_linux.x86_64.zip
+          chmod +x Godot_v4.4.1-stable_linux.x86_64
+      - name: Render character gallery
+        run: |
+          mkdir -p Screenshots
+          xvfb-run -a env CAPTURE_CHARACTERS=1 LIBGL_ALWAYS_SOFTWARE=1 ./Godot_v4.4.1-stable_linux.x86_64 --path . --rendering-method gl_compatibility --quit-after 5
+      - name: Upload real Godot screenshot
+        uses: actions/upload-artifact@v4
+        with:
+          name: eight-characters-godot-preview
+          path: Screenshots/eight_characters_godot.png
+          if-no-files-found: error
