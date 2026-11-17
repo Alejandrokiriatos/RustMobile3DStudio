@@ -67,6 +67,15 @@ jobs:
               print(f"{name}: {data['height_m']:.3f} m, {data['triangles']} triangles, {data['bytes']} bytes")
           PY
 
+      - name: Upload generated GLB models for inspection
+        uses: actions/upload-artifact@v4
+        with:
+          name: eight-rigged-survival-skins
+          path: |
+            Models/Characters/SKIN_*.glb
+            Models/Characters/manifest.json
+          if-no-files-found: error
+
       - name: Commit generated character assets to the repository
         run: |
           git config user.name "github-actions[bot]"
@@ -76,5 +85,7 @@ jobs:
             echo "No generated character assets changed."
           else
             git commit -m "Add eight rigged survival character skins"
+            git fetch origin main
+            git rebase origin/main
             git push origin HEAD:main
           fi
