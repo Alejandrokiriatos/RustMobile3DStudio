@@ -1,13 +1,6 @@
 name: Godot grass demo screenshot
 
 on:
-  push:
-    branches: [main]
-    paths:
-      - 'Scripts/GrassTerrain/**'
-      - 'DemoScenes/GrassTerrain/**'
-      - 'project.godot'
-      - '.github/workflows/grass-preview.yml'
   workflow_dispatch:
 
 permissions:
@@ -16,7 +9,7 @@ permissions:
 jobs:
   render:
     runs-on: ubuntu-latest
-    timeout-minutes: 5
+    timeout-minutes: 10
     steps:
       - name: Checkout
         uses: actions/checkout@v4
