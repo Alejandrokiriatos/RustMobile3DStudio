@@ -72,7 +72,7 @@ func _build_skin(data: Dictionary, origin: Vector3) -> void:
 	player.position = origin
 	add_child(player)
 
-	# Identical collision for every cosmetic skin.
+	# Todos los personajes comparten exactamente la misma cápsula de colisión.
 	var collision := CollisionShape3D.new()
 	var capsule := CapsuleShape3D.new()
 	capsule.radius = HITBOX_RADIUS
@@ -83,105 +83,38 @@ func _build_skin(data: Dictionary, origin: Vector3) -> void:
 
 	var skin := _material(data.skin)
 	var hair := _material(data.hair)
-	var top := _material(data.top)
-	var legs := _material(data.legs)
-	var trim := _material(data.trim, 0.72)
-	var gear := _material(data.gear)
+	var trunks := _material([Color("#526c59"), Color("#66513b"), Color("#303831"), Color("#414b5a"), Color("#66505a"), Color("#687b63"), Color("#414b43"), Color("#a45e37")][int(data.style)])
 	var dark := _material(Color("#252522"))
-	var metal := _material(Color("#8b8d86"), 0.38, 0.55)
-	var boot := _material(Color("#292a28"))
-	var style: int = data.style
 
-	# Boots, articulated-looking legs, knee pads and utility belt.
+	# Aspecto base de superviviente: torso descubierto y pantalón corto sencillo.
+	# La ropa térmica, armaduras, mochilas y accesorios se equiparán dentro del juego.
 	for side in [-1.0, 1.0]:
 		var x: float = float(side) * 0.115
-		_capsule(player, legs, Vector3(x, 0.49, 0.0), 0.76, 0.105)
-		_box(player, boot, Vector3(x, 0.105, 0.055), Vector3(0.205, 0.16, 0.32))
-		_box(player, trim if style in [2, 6] else gear, Vector3(x, 0.48, 0.108), Vector3(0.19, 0.13, 0.055))
-		_box(player, dark, Vector3(x, 0.20, -0.005), Vector3(0.13, 0.07, 0.22))
-	_box(player, legs, Vector3(0, 0.91, 0), Vector3(0.39, 0.27, 0.24))
-	_box(player, gear, Vector3(0, 0.99, 0.135), Vector3(0.42, 0.075, 0.045))
-	_box(player, metal, Vector3(0, 0.99, 0.163), Vector3(0.095, 0.07, 0.025))
-	# Distinct cargo pockets and stitching break up the large flat trouser surfaces.
-	for side in [-1.0, 1.0]:
-		_box(player, gear, Vector3(side * 0.16, 0.70, 0.125), Vector3(0.105, 0.16, 0.055))
-		_box(player, trim, Vector3(side * 0.16, 0.70, 0.157), Vector3(0.07, 0.018, 0.012))
-		_box(player, dark, Vector3(side * 0.115, 0.32, 0.12), Vector3(0.13, 0.035, 0.025))
+		_capsule(player, skin, Vector3(x, 0.49, 0.0), 0.76, 0.105)
+		_sphere(player, skin, Vector3(x, 0.105, 0.075), Vector3(0.105, 0.075, 0.17))
 
-	# Torso with shaped shoulders, chest layer and visible clothing seams.
-	_capsule(player, top, Vector3(0, 1.205, 0), 0.64, 0.205)
+	# Pantalón corto de baño, sin bolsillos, cinturones ni protecciones.
+	_box(player, trunks, Vector3(0, 0.82, 0), Vector3(0.405, 0.30, 0.255))
+	_box(player, trunks, Vector3(0, 0.665, 0), Vector3(0.39, 0.10, 0.245))
+	_box(player, dark, Vector3(0, 0.965, 0.132), Vector3(0.405, 0.025, 0.018))
+
+	# Torso desnudo y brazos; se conserva la misma proporción en los ocho skins.
+	_capsule(player, skin, Vector3(0, 1.205, 0), 0.64, 0.205)
 	for side in [-1.0, 1.0]:
-		_sphere(player, top, Vector3(side * 0.205, 1.39, 0), Vector3(0.125, 0.12, 0.13))
-		_capsule(player, top, Vector3(side * 0.255, 1.19, 0.0), 0.56, 0.083, Vector3(0, 0, side * -0.10))
+		_sphere(player, skin, Vector3(side * 0.205, 1.39, 0), Vector3(0.125, 0.12, 0.13))
+		_capsule(player, skin, Vector3(side * 0.255, 1.19, 0.0), 0.56, 0.083, Vector3(0, 0, side * -0.10))
 		_capsule(player, skin, Vector3(side * 0.27, 0.855, 0.015), 0.20, 0.061)
 		_sphere(player, skin, Vector3(side * 0.27, 0.765, 0.025), Vector3(0.067, 0.07, 0.065))
-		# Layered cuffs, forearm protection and readable hand details.
-		_capsule(player, skin, Vector3(side * 0.27, 0.855, 0.018), 0.16, 0.058)
-		_box(player, trim if style in [0, 3, 5] else dark, Vector3(side * 0.27, 0.955, 0.018), Vector3(0.145, 0.055, 0.13))
-		_box(player, gear, Vector3(side * 0.27, 0.50, 0.135), Vector3(0.18, 0.12, 0.045))
-		_box(player, trim, Vector3(side * 0.27, 0.50, 0.16), Vector3(0.11, 0.025, 0.015))
-	# Vest/front panel and side seams.
-	_box(player, gear, Vector3(0, 1.235, 0.187), Vector3(0.285, 0.39, 0.045))
-	_box(player, trim, Vector3(0, 1.235, 0.214), Vector3(0.045, 0.36, 0.018))
-	for side in [-1.0, 1.0]:
-		_box(player, trim, Vector3(side * 0.115, 1.31, 0.218), Vector3(0.075, 0.075, 0.02))
-		_box(player, dark, Vector3(side * 0.105, 1.10, 0.218), Vector3(0.085, 0.12, 0.025))
 
-	# Neck and head remain inside the shared 1.75 m capsule.
+	# Cuello, cabeza y rasgos faciales.
 	_capsule(player, skin, Vector3(0, 1.515, 0), 0.15, 0.068)
 	_sphere(player, skin, Vector3(0, 1.595, 0), Vector3(0.132, 0.155, 0.125))
-	# Hair, ears, nose, eyes and brows create a readable face at game distance.
 	_sphere(player, hair, Vector3(0, 1.692, -0.012), Vector3(0.137, 0.075, 0.132))
 	_sphere(player, skin, Vector3(0, 1.575, 0.126), Vector3(0.027, 0.035, 0.028))
 	for side in [-1.0, 1.0]:
 		_sphere(player, skin, Vector3(side * 0.132, 1.59, 0), Vector3(0.025, 0.045, 0.035))
 		_sphere(player, dark, Vector3(side * 0.049, 1.615, 0.112), Vector3(0.014, 0.018, 0.009))
 		_box(player, hair, Vector3(side * 0.05, 1.642, 0.113), Vector3(0.045, 0.012, 0.012))
-
-	# Each outfit has its own recognizable silhouette and gear arrangement.
-	match style:
-		0: # Nomad: scarf, shoulder wrap and bedroll.
-			_capsule(player, trim, Vector3(0, 1.48, 0.02), 0.18, 0.105)
-			_box(player, gear, Vector3(0, 1.28, -0.205), Vector3(0.30, 0.30, 0.12))
-			_box(player, trim, Vector3(0.0, 1.42, 0.225), Vector3(0.22, 0.045, 0.025))
-		1: # Tracker: hood, chest harness and field pack.
-			_sphere(player, gear, Vector3(0, 1.67, -0.025), Vector3(0.16, 0.12, 0.15))
-			_box(player, trim, Vector3(0, 1.25, 0.242), Vector3(0.055, 0.34, 0.025))
-			_box(player, gear, Vector3(0, 1.31, -0.20), Vector3(0.34, 0.42, 0.16))
-			_box(player, trim, Vector3(0.18, 1.22, 0.18), Vector3(0.08, 0.18, 0.04))
-		2: # Vanguard: reinforced shoulder plates and armored chest.
-			for side in [-1.0, 1.0]:
-				_sphere(player, trim, Vector3(side * 0.22, 1.40, 0.01), Vector3(0.15, 0.09, 0.15))
-				_box(player, gear, Vector3(side * 0.16, 1.18, 0.245), Vector3(0.10, 0.22, 0.04))
-			_box(player, metal, Vector3(0, 1.31, 0.245), Vector3(0.16, 0.11, 0.025))
-		3: # Mechanic: work vest, tool belt and cap.
-			_box(player, trim, Vector3(0, 1.70, 0), Vector3(0.25, 0.055, 0.24))
-			_box(player, gear, Vector3(0, 1.665, 0.09), Vector3(0.28, 0.025, 0.12))
-			_box(player, dark, Vector3(-0.17, 1.02, 0.17), Vector3(0.12, 0.14, 0.06))
-			_box(player, metal, Vector3(0.17, 1.02, 0.17), Vector3(0.12, 0.14, 0.06))
-			_box(player, trim, Vector3(0, 1.12, 0.245), Vector3(0.30, 0.08, 0.035))
-		4: # Wanderer: hooded jacket and cross-body strap.
-			_sphere(player, gear, Vector3(0, 1.67, -0.02), Vector3(0.16, 0.12, 0.15))
-			_box(player, trim, Vector3(0, 1.24, 0.245), Vector3(0.055, 0.38, 0.03), Vector3(0, 0, -0.42))
-			_box(player, gear, Vector3(0, 1.30, -0.20), Vector3(0.32, 0.38, 0.15))
-		5: # Ranger: brimmed hat, binoculars and side pouch.
-			_capsule(player, hair, Vector3(0, 1.70, 0), 0.07, 0.12)
-			_box(player, trim, Vector3(0, 1.735, 0), Vector3(0.36, 0.025, 0.30))
-			_box(player, gear, Vector3(0, 1.30, -0.20), Vector3(0.34, 0.42, 0.14))
-			for side in [-1.0, 1.0]:
-				_capsule(player, dark, Vector3(side * 0.055, 1.50, 0.20), 0.11, 0.035)
-		6: # Operator: face covering, headset and tactical rig.
-			_box(player, gear, Vector3(0, 1.555, 0.115), Vector3(0.20, 0.09, 0.045))
-			_sphere(player, metal, Vector3(-0.145, 1.61, 0), Vector3(0.035, 0.07, 0.055))
-			_box(player, trim, Vector3(0, 1.28, 0.245), Vector3(0.29, 0.17, 0.035))
-			for side in [-1.0, 1.0]:
-				_box(player, gear, Vector3(side * 0.18, 1.18, 0.18), Vector3(0.08, 0.20, 0.09))
-		7: # Scavenger: goggles, patched coat and scrap shoulder pad.
-			_box(player, dark, Vector3(0, 1.625, 0.12), Vector3(0.22, 0.055, 0.045))
-			for side in [-1.0, 1.0]:
-				_sphere(player, metal, Vector3(side * 0.055, 1.625, 0.15), Vector3(0.045, 0.035, 0.018))
-			_sphere(player, trim, Vector3(0.22, 1.40, 0), Vector3(0.12, 0.10, 0.14))
-			_box(player, gear, Vector3(0, 1.28, -0.20), Vector3(0.34, 0.40, 0.16))
 
 	var label := Label3D.new()
 	label.text = str(data.name)
