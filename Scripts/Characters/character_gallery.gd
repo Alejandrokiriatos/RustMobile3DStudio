@@ -21,6 +21,8 @@ func _ready() -> void:
 		var row := i / 4
 		var col := i % 4
 		_build_person(PEOPLE[i], Vector3((col - 1.5) * 2.15, 0.0, (row - 0.5) * 2.5))
+	if OS.get_environment("CAPTURE_CHARACTERS") == "1":
+		_capture_preview()
 
 func _mat(color: Color, roughness := 0.9) -> StandardMaterial3D:
 	var m := StandardMaterial3D.new()
@@ -162,3 +164,9 @@ func _build_stage() -> void:
 		marker.material_override = _mat(Color("#657171"))
 		marker.position = Vector3(x, 0.002, 0)
 		add_child(marker)
+
+func _capture_preview() -> void:
+	await get_tree().create_timer(2.0).timeout
+	var image := get_viewport().get_texture().get_image()
+	image.save_png("res://Screenshots/eight_characters_godot.png")
+	get_tree().quit()
