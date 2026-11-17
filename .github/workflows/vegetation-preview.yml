@@ -1,4 +1,4 @@
-name: Godot vegetation gallery preview
+name: Godot vegetation models and gallery preview
 
 on:
   push:
@@ -6,6 +6,7 @@ on:
     paths:
       - 'Scripts/Vegetation/**'
       - 'DemoScenes/Vegetation/**'
+      - 'Models/Vegetation/**'
       - '.github/workflows/vegetation-preview.yml'
   workflow_dispatch:
 
@@ -13,9 +14,9 @@ permissions:
   contents: read
 
 jobs:
-  render:
+  build-and-render:
     runs-on: ubuntu-latest
-    timeout-minutes: 10
+    timeout-minutes: 15
     steps:
       - uses: actions/checkout@v4
       - name: Install display and OpenGL software renderer
@@ -29,15 +30,27 @@ jobs:
           chmod +x Godot_v4.4.1-stable_linux.x86_64
       - name: Import project resources
         run: ./Godot_v4.4.1-stable_linux.x86_64 --headless --editor --path . --import --quit
-      - name: Render the 17 real procedural vegetation models
+      - name: Validate all 17 reusable 3D assets
+        run: ./Godot_v4.4.1-stable_linux.x86_64 --headless --path . --script res://Scripts/Vegetation/verify_vegetation.gd
+      - name: Export and re-import 17 standalone GLB models
+        run: ./Godot_v4.4.1-stable_linux.x86_64 --headless --path . --script res://Scripts/Vegetation/export_vegetation.gd
+      - name: Verify all GLB files exist
+        run: |
+          test "$(find build/vegetation -maxdepth 1 -name '*.glb' | wc -l)" -eq 17
+          test -s build/vegetation/TREE_01_PINE.glb
+          test -s build/vegetation/BUSH_01_FIBER.glb
+          test -s build/vegetation/BUSH_02_FOOD.glb
+      - name: Render the actual Godot vegetation gallery
         run: |
           mkdir -p Screenshots
           timeout 90s xvfb-run -a env CAPTURE_VEGETATION=1 LIBGL_ALWAYS_SOFTWARE=1 ./Godot_v4.4.1-stable_linux.x86_64 --path . --rendering-method gl_compatibility res://DemoScenes/Vegetation/vegetation_gallery.tscn
-      - name: Verify the real Godot capture
+      - name: Verify the Godot capture
         run: test -s Screenshots/vegetation_gallery_godot.png
-      - name: Upload real Godot preview
+      - name: Upload the 17 GLB models and real Godot screenshot
         uses: actions/upload-artifact@v4
         with:
-          name: vegetation-gallery-godot-preview
-          path: Screenshots/vegetation_gallery_godot.png
+          name: vegetation-17-models-godot-4.4.1
+          path: |
+            build/vegetation/*.glb
+            Screenshots/vegetation_gallery_godot.png
           if-no-files-found: error
