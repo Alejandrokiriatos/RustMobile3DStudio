@@ -5,57 +5,57 @@
   "skins": {
     "SKIN_01": {
       "height_m": 1.812841033935547,
-      "triangles": 40084,
-      "bytes": 7367980,
+      "triangles": 40072,
+      "bytes": 7429576,
       "gender": "male",
       "animation_count": 29
     },
     "SKIN_02": {
       "height_m": 1.67114315032959,
-      "triangles": 41224,
-      "bytes": 7313236,
+      "triangles": 41484,
+      "bytes": 8034016,
       "gender": "female",
       "animation_count": 29
     },
     "SKIN_03": {
       "height_m": 1.871540641784668,
-      "triangles": 37798,
-      "bytes": 7362436,
+      "triangles": 37786,
+      "bytes": 7385292,
       "gender": "male",
       "animation_count": 29
     },
     "SKIN_04": {
       "height_m": 1.6755616188049318,
-      "triangles": 42634,
-      "bytes": 7415032,
+      "triangles": 42894,
+      "bytes": 8136812,
       "gender": "female",
       "animation_count": 29
     },
     "SKIN_05": {
       "height_m": 1.7438019752502443,
-      "triangles": 38932,
-      "bytes": 7765588,
+      "triangles": 38920,
+      "bytes": 7806212,
       "gender": "male",
       "animation_count": 29
     },
     "SKIN_06": {
       "height_m": 1.7243369102478028,
-      "triangles": 42468,
-      "bytes": 7368016,
+      "triangles": 42720,
+      "bytes": 8084076,
       "gender": "female",
       "animation_count": 29
     },
     "SKIN_07": {
       "height_m": 1.8230046272277833,
-      "triangles": 48632,
-      "bytes": 7277540,
+      "triangles": 48620,
+      "bytes": 7300284,
       "gender": "male",
       "animation_count": 29
     },
     "SKIN_08": {
       "height_m": 1.7003259658813477,
-      "triangles": 70386,
-      "bytes": 7368128,
+      "triangles": 41484,
+      "bytes": 7961876,
       "gender": "female",
       "animation_count": 29
     }
