@@ -7,14 +7,14 @@ const HITBOX_RADIUS := 0.32
 const HITBOX_HEIGHT := 1.75
 
 const SKINS := [
-	{"name":"SKIN 01  NÓMADA","skin":Color("#b87954"),"hair":Color("#30231e"),"top":Color("#777b63"),"legs":Color("#393d39"),"trim":Color("#b7a27b"),"gear":Color("#51483a"),"style":0},
-	{"name":"SKIN 02  RASTREADOR","skin":Color("#d49a70"),"hair":Color("#4b3025"),"top":Color("#526c59"),"legs":Color("#66513b"),"trim":Color("#b4a16e"),"gear":Color("#6c5941"),"style":1},
-	{"name":"SKIN 03  VANGUARDIA","skin":Color("#a96f50"),"hair":Color("#211e1b"),"top":Color("#414b43"),"legs":Color("#303831"),"trim":Color("#9a9b77"),"gear":Color("#292f2d"),"style":2},
-	{"name":"SKIN 04  MECÁNICO","skin":Color("#c58b68"),"hair":Color("#382a22"),"top":Color("#a45e37"),"legs":Color("#414b5a"),"trim":Color("#d0b46b"),"gear":Color("#45494b"),"style":3},
-	{"name":"SKIN 05  ERRANTE","skin":Color("#e0b18f"),"hair":Color("#38251f"),"top":Color("#806b65"),"legs":Color("#4c4648"),"trim":Color("#c5a88b"),"gear":Color("#514044"),"style":4},
-	{"name":"SKIN 06  EXPLORADOR","skin":Color("#bd8768"),"hair":Color("#251c19"),"top":Color("#687b63"),"legs":Color("#514c3c"),"trim":Color("#b8a276"),"gear":Color("#4d5948"),"style":5},
-	{"name":"SKIN 07  OPERADOR","skin":Color("#9d684e"),"hair":Color("#211c1a"),"top":Color("#414b43"),"legs":Color("#303831"),"trim":Color("#a4a17b"),"gear":Color("#252b2b"),"style":6},
-	{"name":"SKIN 08  CHATARRERO","skin":Color("#d8a17f"),"hair":Color("#67402d"),"top":Color("#a45e37"),"legs":Color("#414b5a"),"trim":Color("#d0b46b"),"gear":Color("#5a5144"),"style":7}
+	{"name":"SKIN 01","skin":Color("#b87954"),"hair":Color("#30231e"),"top":Color("#777b63"),"legs":Color("#393d39"),"trim":Color("#b7a27b"),"gear":Color("#51483a"),"style":0},
+	{"name":"SKIN 02","skin":Color("#d49a70"),"hair":Color("#4b3025"),"top":Color("#526c59"),"legs":Color("#66513b"),"trim":Color("#b4a16e"),"gear":Color("#6c5941"),"style":1},
+	{"name":"SKIN 03","skin":Color("#a96f50"),"hair":Color("#211e1b"),"top":Color("#414b43"),"legs":Color("#303831"),"trim":Color("#9a9b77"),"gear":Color("#292f2d"),"style":2},
+	{"name":"SKIN 04","skin":Color("#c58b68"),"hair":Color("#382a22"),"top":Color("#a45e37"),"legs":Color("#414b5a"),"trim":Color("#d0b46b"),"gear":Color("#45494b"),"style":3},
+	{"name":"SKIN 05","skin":Color("#e0b18f"),"hair":Color("#38251f"),"top":Color("#806b65"),"legs":Color("#4c4648"),"trim":Color("#c5a88b"),"gear":Color("#514044"),"style":4},
+	{"name":"SKIN 06","skin":Color("#bd8768"),"hair":Color("#251c19"),"top":Color("#687b63"),"legs":Color("#514c3c"),"trim":Color("#b8a276"),"gear":Color("#4d5948"),"style":5},
+	{"name":"SKIN 07","skin":Color("#9d684e"),"hair":Color("#211c1a"),"top":Color("#414b43"),"legs":Color("#303831"),"trim":Color("#a4a17b"),"gear":Color("#252b2b"),"style":6},
+	{"name":"SKIN 08","skin":Color("#d8a17f"),"hair":Color("#67402d"),"top":Color("#a45e37"),"legs":Color("#414b5a"),"trim":Color("#d0b46b"),"gear":Color("#5a5144"),"style":7}
 ]
 
 func _ready() -> void:
