@@ -1,10 +1,11 @@
 extends Node3D
 
-# Preview scene for the eight rigged GLB skins. Gameplay dimensions stay independent.
+# Showcase for eight rigged human GLBs. Cosmetic selection never changes gameplay.
 const PLAYER_HEIGHT := 1.75
 const HITBOX_RADIUS := 0.32
 const HITBOX_HEIGHT := 1.75
 const SKIN_IDS := ["SKIN_01", "SKIN_02", "SKIN_03", "SKIN_04", "SKIN_05", "SKIN_06", "SKIN_07", "SKIN_08"]
+const ROW_HEIGHT := 2.22
 
 func _ready() -> void:
 	print("CHARACTER_GALLERY_READY; loading eight rigged GLB skins")
@@ -14,9 +15,10 @@ func _ready() -> void:
 	for i in SKIN_IDS.size():
 		var row := i / 4
 		var col := i % 4
-		var x := (float(col) - 1.5) * 2.4
-		var z := (0.5 - float(row)) * 3.0
-		_build_character(SKIN_IDS[i], Vector3(x, 0.0, z), rows)
+		var x := (float(col) - 1.5) * 1.98
+		var y := float(1 - row) * ROW_HEIGHT + 0.045
+		var origin := Vector3(x, y, 0.0)
+		_build_character(SKIN_IDS[i], origin, rows)
 	if OS.get_environment("CAPTURE_CHARACTERS") == "1":
 		call_deferred("_capture_preview")
 
@@ -49,7 +51,7 @@ func _build_character(skin_id: String, origin: Vector3, rows: Dictionary) -> voi
 	player.position = origin
 	add_child(player)
 
-	# One shared capsule for every skin; cosmetic choice never changes gameplay.
+	# The exact same collision capsule is assigned to all eight selectable skins.
 	var collision := CollisionShape3D.new()
 	var capsule := CapsuleShape3D.new()
 	capsule.radius = HITBOX_RADIUS
@@ -72,17 +74,17 @@ func _build_character(skin_id: String, origin: Vector3, rows: Dictionary) -> voi
 	var label := Label3D.new()
 	label.name = "SkinLabel"
 	label.text = skin_id.replace("_", " ")
-	label.position = Vector3(0.0, 1.98, 0.0)
-	label.font_size = 42
-	label.pixel_size = 0.004
+	label.position = Vector3(0.0, 1.91, 0.0)
+	label.font_size = 32
+	label.pixel_size = 0.0035
 	label.billboard = BaseMaterial3D.BILLBOARD_ENABLED
 	label.modulate = Color("#f1eee6")
-	label.outline_size = 8
+	label.outline_size = 7
 	label.outline_modulate = Color("#172024")
 	player.add_child(label)
 
-	print(skin_id, ": imported; scale=", uniform_scale,
-		"; source height=", source_height,
+	print(skin_id, ": imported; normalized height=", PLAYER_HEIGHT,
+		"m; source height=", source_height,
 		"; triangles=", int(record.get("triangles", 0)),
 		"; package MB=", snappedf(float(record.get("bytes", 0)) / 1048576.0, 0.01))
 
@@ -109,13 +111,13 @@ func _find_animation_player(node: Node) -> AnimationPlayer:
 func _add_pedestal(origin: Vector3) -> void:
 	var base := MeshInstance3D.new()
 	var cylinder := CylinderMesh.new()
-	cylinder.top_radius = 0.55
-	cylinder.bottom_radius = 0.57
+	cylinder.top_radius = 0.46
+	cylinder.bottom_radius = 0.49
 	cylinder.height = 0.075
 	cylinder.radial_segments = 40
 	base.mesh = cylinder
 	base.material_override = _material(Color("#465054"), 0.72, 0.12)
-	base.position = origin
+	base.position = origin + Vector3(0.0, -0.04, 0.0)
 	add_child(base)
 
 func _material(color: Color, roughness := 0.84, metallic := 0.0) -> StandardMaterial3D:
@@ -128,11 +130,20 @@ func _material(color: Color, roughness := 0.84, metallic := 0.0) -> StandardMate
 func _build_stage() -> void:
 	var floor := MeshInstance3D.new()
 	var plane := PlaneMesh.new()
-	plane.size = Vector2(13.0, 9.0)
+	plane.size = Vector2(9.6, 5.4)
 	floor.mesh = plane
 	floor.material_override = _material(Color("#303a3d"))
-	floor.position = Vector3(0.0, -0.055, 0.0)
+	floor.position = Vector3(0.0, -0.06, 0.0)
 	add_child(floor)
+
+	# Raised rear shelf separates the second row without overlapping the figures.
+	var shelf := MeshInstance3D.new()
+	var shelf_mesh := BoxMesh.new()
+	shelf_mesh.size = Vector3(8.7, 0.12, 2.0)
+	shelf.mesh = shelf_mesh
+	shelf.material_override = _material(Color("#3b464a"), 0.78, 0.08)
+	shelf.position = Vector3(0.0, ROW_HEIGHT - 0.015, -0.12)
+	add_child(shelf)
 
 	var world := WorldEnvironment.new()
 	var environment := Environment.new()
@@ -140,28 +151,28 @@ func _build_stage() -> void:
 	environment.background_color = Color("#1e292d")
 	environment.ambient_light_source = Environment.AMBIENT_SOURCE_COLOR
 	environment.ambient_light_color = Color("#c3ccca")
-	environment.ambient_light_energy = 0.78
+	environment.ambient_light_energy = 0.56
 	world.environment = environment
 	add_child(world)
 
 	var key := DirectionalLight3D.new()
-	key.rotation_degrees = Vector3(-42.0, -24.0, 0.0)
-	key.light_energy = 1.35
+	key.rotation_degrees = Vector3(-28.0, -24.0, 0.0)
+	key.light_energy = 1.05
 	key.shadow_enabled = true
 	add_child(key)
 
 	var fill := DirectionalLight3D.new()
-	fill.rotation_degrees = Vector3(-18.0, 145.0, 0.0)
-	fill.light_energy = 0.52
+	fill.rotation_degrees = Vector3(-12.0, 145.0, 0.0)
+	fill.light_energy = 0.28
 	fill.shadow_enabled = false
 	add_child(fill)
 
 	var camera := Camera3D.new()
 	camera.projection = Camera3D.PROJECTION_ORTHOGONAL
-	camera.size = 6.25
-	camera.position = Vector3(0.0, 4.25, 12.5)
+	camera.size = 4.48
+	camera.position = Vector3(0.0, 2.18, 15.0)
 	add_child(camera)
-	camera.look_at(Vector3(0.0, 0.95, 0.0), Vector3.UP)
+	camera.look_at(Vector3(0.0, 2.18, 0.0), Vector3.UP)
 	camera.current = true
 
 func _capture_preview() -> void:

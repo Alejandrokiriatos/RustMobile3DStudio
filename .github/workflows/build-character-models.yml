@@ -29,7 +29,10 @@ jobs:
         run: npm ci
       - name: Add project-specific sports bra and plain survival shorts
         working-directory: generator
-        run: node ../CharacterBuild/patch-generator.mjs
+        run: |
+          node ../CharacterBuild/patch-generator.mjs
+          grep -q "id: 'sports_bra'" src/core/garments/catalog.ts
+          grep -q "id: 'survival_shorts'" src/core/garments/catalog.ts
       - name: Fetch CC0 MakeHuman anatomy, clothing and hair assets
         working-directory: generator
         run: npx tsx scripts/setup-assets.ts
@@ -43,15 +46,18 @@ jobs:
           npx tsx scripts/export-rust-skins.ts ../CharacterBuild/skins.json ../Models/Characters
       - name: Keep gameplay animations and compact GLB files for mobile
         run: python3 CharacterBuild/optimize_glb.py Models/Characters
-      - name: Validate all eight optimized models
+      - name: Validate all eight optimized models and required garments
         run: |
           python3 - <<'PY'
           import json, pathlib, struct
           root = pathlib.Path("Models/Characters")
+          config = json.loads(pathlib.Path("CharacterBuild/skins.json").read_text())
           manifest = json.loads((root / "manifest.json").read_text())
           skins = manifest["skins"]
-          assert len(skins) == 8
+          assert len(skins) == 8, f"Expected 8 manifest records, got {len(skins)}"
+          by_id = {row["id"]: row["params"] for row in config}
           required = {"Idle", "Walk", "Run", "Jump"}
+          long_hair = {"long01", "braid01", "ponytail01"}
           for i in range(1, 9):
               name = f"SKIN_{i:02d}"
               path = root / f"{name}.glb"
@@ -63,11 +69,16 @@ jobs:
               doc = json.loads(raw[20:20 + json_size].decode("utf-8").rstrip(" "))
               names = {clip.get("name") for clip in doc.get("animations", [])}
               assert required.issubset(names), f"{name} missing clips: {required - names}"
-              assert len(doc.get("skins", [])) == 1, f"{name} is missing a rig"
+              assert len(doc.get("skins", [])) == 1, f"{name} is missing its rig"
+              material_names = {m.get("name") for m in doc.get("materials", [])}
+              assert "Simple survival shorts" in material_names, f"{name} has no real shorts garment"
+              if i % 2 == 0:
+                  assert "Sports bra" in material_names, f"{name} has no opaque sports bra garment"
+                  assert by_id[name]["hair"] in long_hair, f"{name} is configured without long hair"
               assert name in skins
               assert skins[name]["bytes"] == path.stat().st_size
           assert manifest.get("optimized_for_mobile") is True
-          print("Validated eight rigged GLBs, core animation clips and package metrics.")
+          print("Validated eight rigged GLBs, opaque female sports bras, actual shorts, long female hairstyles and animation clips.")
           for name, data in skins.items():
               print(f"{name}: {data['height_m']:.3f} m source, {data['triangles']} triangles, {data['bytes']/1048576:.2f} MB, {data['animation_count']} clips")
           PY
