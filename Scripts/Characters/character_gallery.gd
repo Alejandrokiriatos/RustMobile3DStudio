@@ -210,7 +210,7 @@ func _build_legs(player: Node3D, skin: Material, female: bool, width_scale: floa
 	var hip := 0.105 if female else 0.095
 	var calf := 0.070 if female else 0.075
 	for side in [-1.0, 1.0]:
-		var x := side * (0.105 if female else 0.095) * width_scale
+		var x: float = side * (0.105 if female else 0.095) * width_scale
 		_tube(player, "Thigh", _path([Vector3(x, 0.83, 0), Vector3(x * 1.02, 0.67, 0.005), Vector3(x * 1.05, 0.48, 0.008)]), _radii([Vector2(hip, hip * 0.92), Vector2(hip * 0.86, hip * 0.82), Vector2(0.073, 0.075)]), skin, 20, 6)
 		_tube(player, "Calf", _path([Vector3(x * 1.05, 0.49, 0.008), Vector3(x * 1.04, 0.31, -0.005), Vector3(x * 1.03, 0.13, -0.015)]), _radii([Vector2(0.073, 0.075), Vector2(calf, calf * 0.9), Vector2(0.052, 0.057)]), skin, 18, 6)
 		_ellipsoid(player, "Foot", Vector3(x * 1.03, 0.075, 0.065), Vector3(0.066, 0.060, 0.135), skin, 20)
@@ -265,14 +265,14 @@ func _build_arms(player: Node3D, skin: Material, female: bool, width_scale: floa
 	var upper := 0.064 if female else 0.071
 	var forearm := 0.052 if female else 0.060
 	for side in [-1.0, 1.0]:
-		var sx := side * (0.205 if female else 0.237) * width_scale
+		var sx: float = side * (0.205 if female else 0.237) * width_scale
 		_ellipsoid(player, "Shoulder", Vector3(sx, 1.388, 0), Vector3(shoulder, 0.105, 0.095), skin, 20)
 		_tube(player, "Upper_Arm", _path([Vector3(sx, 1.40, 0), Vector3(side * 0.275, 1.245, 0.012), Vector3(side * 0.292, 1.105, 0.018)]), _radii([Vector2(upper, upper), Vector2(upper * 0.91, upper * 0.92), Vector2(0.055, 0.055)]), skin, 18, 5)
 		_ellipsoid(player, "Elbow", Vector3(side * 0.292, 1.095, 0.018), Vector3(0.057, 0.061, 0.058), skin, 18)
 		_tube(player, "Forearm", _path([Vector3(side * 0.292, 1.09, 0.018), Vector3(side * 0.304, 0.985, 0.030), Vector3(side * 0.304, 0.885, 0.038)]), _radii([Vector2(0.054, 0.055), Vector2(forearm, forearm), Vector2(0.043, 0.045)]), skin, 18, 5)
 		_ellipsoid(player, "Hand", Vector3(side * 0.304, 0.845, 0.045), Vector3(0.047, 0.067, 0.035), skin, 18)
 		for finger in range(4):
-			var fx := side * (0.278 + float(finger) * 0.018)
+			var fx: float = side * (0.278 + float(finger) * 0.018)
 			_tube(player, "Finger", _path([Vector3(fx, 0.835, 0.067), Vector3(fx, 0.795, 0.075)]), _radii([Vector2(0.010, 0.010), Vector2(0.008, 0.008)]), skin, 8, 2)
 
 
