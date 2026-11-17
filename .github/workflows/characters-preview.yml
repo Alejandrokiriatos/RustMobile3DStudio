@@ -30,7 +30,7 @@ jobs:
       - name: Render character gallery
         run: |
           mkdir -p Screenshots
-          xvfb-run -a env CAPTURE_CHARACTERS=1 LIBGL_ALWAYS_SOFTWARE=1 ./Godot_v4.4.1-stable_linux.x86_64 --path . --rendering-method gl_compatibility
+          timeout 90s xvfb-run -a env CAPTURE_CHARACTERS=1 LIBGL_ALWAYS_SOFTWARE=1 ./Godot_v4.4.1-stable_linux.x86_64 --path . --rendering-method gl_compatibility --quit-after 900
       - name: Upload real Godot screenshot
         uses: actions/upload-artifact@v4
         with:
