@@ -30,13 +30,19 @@ jobs:
           chmod +x Godot_v4.4.1-stable_linux.x86_64
       - name: Import GLB character assets with Godot
         run: ./Godot_v4.4.1-stable_linux.x86_64 --headless --editor --path . --import --quit
-      - name: Render character gallery
+      - name: Render front and rear character galleries
         run: |
           mkdir -p Screenshots
-          timeout 90s xvfb-run -a env CAPTURE_CHARACTERS=1 LIBGL_ALWAYS_SOFTWARE=1 ./Godot_v4.4.1-stable_linux.x86_64 --path . --rendering-method gl_compatibility --quit-after 900
-      - name: Upload real Godot screenshot
+          timeout 90s xvfb-run -a env CAPTURE_CHARACTERS=1 LIBGL_ALWAYS_SOFTWARE=1 ./Godot_v4.4.1-stable_linux.x86_64 --path . --rendering-method gl_compatibility --quit-after 1200
+      - name: Verify both real Godot captures exist
+        run: |
+          test -s Screenshots/eight_characters_godot.png
+          test -s Screenshots/eight_characters_back_godot.png
+      - name: Upload real Godot front and rear screenshots
         uses: actions/upload-artifact@v4
         with:
           name: eight-characters-godot-preview
-          path: Screenshots/eight_characters_godot.png
+          path: |
+            Screenshots/eight_characters_godot.png
+            Screenshots/eight_characters_back_godot.png
           if-no-files-found: error

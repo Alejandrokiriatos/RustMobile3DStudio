@@ -6,6 +6,7 @@ const HITBOX_RADIUS := 0.32
 const HITBOX_HEIGHT := 1.75
 const SKIN_IDS := ["SKIN_01", "SKIN_02", "SKIN_03", "SKIN_04", "SKIN_05", "SKIN_06", "SKIN_07", "SKIN_08"]
 const ROW_HEIGHT := 2.22
+var _showcase_camera: Camera3D
 
 func _ready() -> void:
 	print("CHARACTER_GALLERY_READY; loading eight rigged GLB skins")
@@ -151,23 +152,24 @@ func _build_stage() -> void:
 	environment.background_color = Color("#1e292d")
 	environment.ambient_light_source = Environment.AMBIENT_SOURCE_COLOR
 	environment.ambient_light_color = Color("#c3ccca")
-	environment.ambient_light_energy = 0.56
+	environment.ambient_light_energy = 0.44
 	world.environment = environment
 	add_child(world)
 
 	var key := DirectionalLight3D.new()
 	key.rotation_degrees = Vector3(-28.0, -24.0, 0.0)
-	key.light_energy = 1.05
+	key.light_energy = 0.82
 	key.shadow_enabled = true
 	add_child(key)
 
 	var fill := DirectionalLight3D.new()
 	fill.rotation_degrees = Vector3(-12.0, 145.0, 0.0)
-	fill.light_energy = 0.28
+	fill.light_energy = 0.16
 	fill.shadow_enabled = false
 	add_child(fill)
 
-	var camera := Camera3D.new()
+	_showcase_camera = Camera3D.new()
+	var camera := _showcase_camera
 	camera.projection = Camera3D.PROJECTION_ORTHOGONAL
 	camera.size = 4.48
 	camera.position = Vector3(0.0, 2.18, 15.0)
@@ -179,8 +181,19 @@ func _capture_preview() -> void:
 	print("CHARACTER_CAPTURE_WAITING")
 	await get_tree().create_timer(3.0).timeout
 	await RenderingServer.frame_post_draw
-	var image := get_viewport().get_texture().get_image()
-	var output_path := ProjectSettings.globalize_path("res://Screenshots/eight_characters_godot.png")
-	var error := image.save_png(output_path)
-	print("CHARACTER_SCREENSHOT path=", output_path, " error=", error, " size=", image.get_size())
+	var front_image := get_viewport().get_texture().get_image()
+	var front_path := ProjectSettings.globalize_path("res://Screenshots/eight_characters_godot.png")
+	var front_error := front_image.save_png(front_path)
+	print("CHARACTER_FRONT_SCREENSHOT path=", front_path, " error=", front_error, " size=", front_image.get_size())
+
+	# A rear view is captured separately so the length and shape of the four women's
+	# hairstyles can be verified rather than judged only from the front.
+	_showcase_camera.position = Vector3(0.0, 2.18, -15.0)
+	_showcase_camera.look_at(Vector3(0.0, 2.18, 0.0), Vector3.UP)
+	await get_tree().create_timer(1.5).timeout
+	await RenderingServer.frame_post_draw
+	var rear_image := get_viewport().get_texture().get_image()
+	var rear_path := ProjectSettings.globalize_path("res://Screenshots/eight_characters_back_godot.png")
+	var rear_error := rear_image.save_png(rear_path)
+	print("CHARACTER_BACK_SCREENSHOT path=", rear_path, " error=", rear_error, " size=", rear_image.get_size())
 	get_tree().quit()

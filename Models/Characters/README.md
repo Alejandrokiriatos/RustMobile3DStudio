@@ -7,7 +7,7 @@ This folder contains eight generated, rigged GLB character assets.
 - SKIN_01, SKIN_03, SKIN_05 and SKIN_07: four distinct masculine appearances.
 - SKIN_02, SKIN_04, SKIN_06 and SKIN_08: four distinct feminine appearances.
 - All four feminine skins wear a fully opaque sports-bra garment and plain survival shorts.
-- Feminine hairstyles are long and varied: loose long hair, braid, ponytail and box braids.
+- Feminine hairstyles use long loose hair, a long braid and a ponytail, with two colour/appearance variants of the long style. The preview workflow captures front and rear views to check their full length.
 - Masculine hairstyles also vary, including short hair, an afro and a close cut.
 - Starter appearance has no armour, backpack, shoes, helmet or extra accessories.
 - Hair, clothing, face and body are planned as replaceable customization slots.
