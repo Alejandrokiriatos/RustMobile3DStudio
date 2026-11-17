@@ -124,7 +124,7 @@ func _cluster(parent: Node3D, pos: Vector3, size: Vector3, material: Material) -
 	return node
 
 func _cone(parent: Node3D, pos: Vector3, radius: float, height: float, material: Material) -> void:
-	var mesh := ConeMesh.new()
+	var mesh := CylinderMesh.new()
 	mesh.bottom_radius = radius
 	mesh.top_radius = 0.025
 	mesh.height = height
