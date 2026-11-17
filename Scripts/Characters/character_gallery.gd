@@ -23,7 +23,7 @@ func _ready() -> void:
 	for i in SKINS.size():
 		var row := i / 4
 		var col := i % 4
-		_build_skin(SKINS[i], Vector3((col - 1.5) * 2.55, 0.0, (row - 0.5) * 2.65))
+		_build_skin(SKINS[i], Vector3((col - 1.5) * 2.25, 0.0, (row - 0.5) * 2.35))
 	if OS.get_environment("CAPTURE_CHARACTERS") == "1":
 		call_deferred("_capture_preview")
 
@@ -54,12 +54,16 @@ func _sphere(parent: Node3D, material: Material, position: Vector3, radius: Vect
 	var shape := SphereMesh.new()
 	shape.radius = 1.0
 	shape.height = 2.0
+	shape.radial_segments = 24
+	shape.rings = 12
 	_mesh(parent, shape, material, position, radius)
 
 func _capsule(parent: Node3D, material: Material, position: Vector3, height: float, radius: float, rotation := Vector3.ZERO) -> void:
 	var shape := CapsuleMesh.new()
 	shape.radius = radius
 	shape.height = height
+	shape.radial_segments = 24
+	shape.rings = 8
 	_mesh(parent, shape, material, position, Vector3.ONE, rotation)
 
 func _build_skin(data: Dictionary, origin: Vector3) -> void:
@@ -98,6 +102,11 @@ func _build_skin(data: Dictionary, origin: Vector3) -> void:
 	_box(player, legs, Vector3(0, 0.91, 0), Vector3(0.39, 0.27, 0.24))
 	_box(player, gear, Vector3(0, 0.99, 0.135), Vector3(0.42, 0.075, 0.045))
 	_box(player, metal, Vector3(0, 0.99, 0.163), Vector3(0.095, 0.07, 0.025))
+	# Distinct cargo pockets and stitching break up the large flat trouser surfaces.
+	for side in [-1.0, 1.0]:
+		_box(player, gear, Vector3(side * 0.16, 0.70, 0.125), Vector3(0.105, 0.16, 0.055))
+		_box(player, trim, Vector3(side * 0.16, 0.70, 0.157), Vector3(0.07, 0.018, 0.012))
+		_box(player, dark, Vector3(side * 0.115, 0.32, 0.12), Vector3(0.13, 0.035, 0.025))
 
 	# Torso with shaped shoulders, chest layer and visible clothing seams.
 	_capsule(player, top, Vector3(0, 1.205, 0), 0.64, 0.205)
@@ -106,6 +115,11 @@ func _build_skin(data: Dictionary, origin: Vector3) -> void:
 		_capsule(player, top, Vector3(side * 0.255, 1.19, 0.0), 0.56, 0.083, Vector3(0, 0, side * -0.10))
 		_capsule(player, skin, Vector3(side * 0.27, 0.855, 0.015), 0.20, 0.061)
 		_sphere(player, skin, Vector3(side * 0.27, 0.765, 0.025), Vector3(0.067, 0.07, 0.065))
+		# Layered cuffs, forearm protection and readable hand details.
+		_capsule(player, skin, Vector3(side * 0.27, 0.855, 0.018), 0.16, 0.058)
+		_box(player, trim if style in [0, 3, 5] else dark, Vector3(side * 0.27, 0.955, 0.018), Vector3(0.145, 0.055, 0.13))
+		_box(player, gear, Vector3(side * 0.27, 0.50, 0.135), Vector3(0.18, 0.12, 0.045))
+		_box(player, trim, Vector3(side * 0.27, 0.50, 0.16), Vector3(0.11, 0.025, 0.015))
 	# Vest/front panel and side seams.
 	_box(player, gear, Vector3(0, 1.235, 0.187), Vector3(0.285, 0.39, 0.045))
 	_box(player, trim, Vector3(0, 1.235, 0.214), Vector3(0.045, 0.36, 0.018))
@@ -181,7 +195,7 @@ func _build_skin(data: Dictionary, origin: Vector3) -> void:
 func _build_stage() -> void:
 	var floor := MeshInstance3D.new()
 	var plane := PlaneMesh.new()
-	plane.size = Vector2(13.0, 9.0)
+	plane.size = Vector2(11.5, 8.0)
 	floor.mesh = plane
 	floor.material_override = _material(Color("#343b3b"))
 	floor.position = Vector3(0, -0.025, 0)
@@ -210,9 +224,9 @@ func _build_stage() -> void:
 	add_child(fill)
 
 	var camera := Camera3D.new()
-	camera.position = Vector3(0, 6.2, 13.4)
-	camera.rotation_degrees = Vector3(-25, 0, 0)
-	camera.fov = 47
+	camera.position = Vector3(0, 5.0, 10.8)
+	camera.rotation_degrees = Vector3(-24, 0, 0)
+	camera.fov = 39
 	camera.current = true
 	add_child(camera)
 
