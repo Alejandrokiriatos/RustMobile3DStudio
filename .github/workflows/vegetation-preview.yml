@@ -1,13 +1,6 @@
 name: Godot vegetation models and gallery preview
 
 on:
-  push:
-    branches: [main]
-    paths:
-      - 'Scripts/Vegetation/**'
-      - 'DemoScenes/Vegetation/**'
-      - 'Models/Vegetation/**'
-      - '.github/workflows/vegetation-preview.yml'
   workflow_dispatch:
 
 permissions:
@@ -16,7 +9,7 @@ permissions:
 jobs:
   build-and-render:
     runs-on: ubuntu-latest
-    timeout-minutes: 15
+    timeout-minutes: 10
     steps:
       - uses: actions/checkout@v4
       - name: Install display and OpenGL software renderer
