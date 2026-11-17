@@ -4,7 +4,7 @@ extends Node3D
 
 const TERRAIN_SIZE := 18.0
 const TERRAIN_SUBDIVISIONS := 48
-const GRASS_COUNT := 3800
+const GRASS_COUNT := 7600
 const PATCH_RADIUS := 8.45
 
 var rng := RandomNumberGenerator.new()
@@ -134,9 +134,20 @@ func _build_grass() -> void:
 	multimesh.mesh = grass_mesh
 	multimesh.instance_count = GRASS_COUNT
 	multimesh.visible_instance_count = GRASS_COUNT
+	# Stratified placement: twice the previous clump count, with jitter to avoid
+	# random bare patches while keeping the distribution visually organic.
+	var grid_side := 88
+	var cell_size := (PATCH_RADIUS * 2.0) / float(grid_side)
+	var cell_indices: Array[int] = []
+	for cell in range(grid_side * grid_side):
+		cell_indices.append(cell)
+	cell_indices.shuffle()
 	for i in range(GRASS_COUNT):
-		var x := rng.randf_range(-PATCH_RADIUS, PATCH_RADIUS)
-		var z := rng.randf_range(-PATCH_RADIUS, PATCH_RADIUS)
+		var cell := cell_indices[i]
+		var cell_x := cell % grid_side
+		var cell_z := int(cell / grid_side)
+		var x := -PATCH_RADIUS + (float(cell_x) + 0.5 + rng.randf_range(-0.38, 0.38)) * cell_size
+		var z := -PATCH_RADIUS + (float(cell_z) + 0.5 + rng.randf_range(-0.38, 0.38)) * cell_size
 		var y := _terrain_height(x, z) + 0.012
 		var scale := rng.randf_range(0.72, 1.28)
 		var rotation := rng.randf_range(0.0, TAU)
