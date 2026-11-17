@@ -3,8 +3,8 @@
 config_version=5
 
 [application]
-config/name="Rust Mobile 3D Studio - Grass Test"
-run/main_scene="res://DemoScenes/GrassTerrain/grass_test.tscn"
+config/name="Rust Mobile 3D Studio - Character Gallery"
+run/main_scene="res://DemoScenes/Characters/character_gallery.tscn"
 
 [rendering]
 renderer/rendering_method="gl_compatibility"
