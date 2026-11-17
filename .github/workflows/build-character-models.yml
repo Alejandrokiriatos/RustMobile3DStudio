@@ -19,55 +19,59 @@ jobs:
       - uses: actions/checkout@v4
         with:
           fetch-depth: 0
-
       - uses: actions/setup-node@v4
         with:
           node-version: '22'
-
       - name: Download the open-source character generator
         run: git clone --depth 1 https://github.com/olatunde85/3d-gen.git generator
-
       - name: Install generator dependencies
         working-directory: generator
         run: npm ci
-
       - name: Add project-specific sports bra and plain survival shorts
         working-directory: generator
         run: node ../CharacterBuild/patch-generator.mjs
-
       - name: Fetch CC0 MakeHuman anatomy, clothing and hair assets
         working-directory: generator
         run: npx tsx scripts/setup-assets.ts
-
       - name: Type-check the patched character generator
         working-directory: generator
         run: npm run typecheck
-
       - name: Export eight rigged GLB character skins
         working-directory: generator
         run: |
           cp ../CharacterBuild/export_skins.ts scripts/export-rust-skins.ts
           npx tsx scripts/export-rust-skins.ts ../CharacterBuild/skins.json ../Models/Characters
-
-      - name: Validate all eight models and the manifest
+      - name: Keep gameplay animations and compact GLB files for mobile
+        run: python3 CharacterBuild/optimize_glb.py Models/Characters
+      - name: Validate all eight optimized models
         run: |
           python3 - <<'PY'
-          import json, pathlib, sys
+          import json, pathlib, struct
           root = pathlib.Path("Models/Characters")
           manifest = json.loads((root / "manifest.json").read_text())
           skins = manifest["skins"]
-          assert len(skins) == 8, f"Expected 8 manifest records, got {len(skins)}"
+          assert len(skins) == 8
+          required = {"Idle", "Walk", "Run", "Jump"}
           for i in range(1, 9):
               name = f"SKIN_{i:02d}"
               path = root / f"{name}.glb"
-              assert path.exists() and path.stat().st_size > 100_000, f"Missing/invalid {path}"
-              assert name in skins, f"Missing {name} metrics"
-          print("Validated eight GLB files.")
+              assert path.exists(), f"Missing {path}"
+              assert 1_000_000 < path.stat().st_size < 12_000_000, f"Unexpected package size: {path}"
+              raw = path.read_bytes()
+              assert raw[:4] == b"glTF"
+              json_size = struct.unpack_from("<I", raw, 12)[0]
+              doc = json.loads(raw[20:20 + json_size].decode("utf-8").rstrip(" "))
+              names = {clip.get("name") for clip in doc.get("animations", [])}
+              assert required.issubset(names), f"{name} missing clips: {required - names}"
+              assert len(doc.get("skins", [])) == 1, f"{name} is missing a rig"
+              assert name in skins
+              assert skins[name]["bytes"] == path.stat().st_size
+          assert manifest.get("optimized_for_mobile") is True
+          print("Validated eight rigged GLBs, core animation clips and package metrics.")
           for name, data in skins.items():
-              print(f"{name}: {data['height_m']:.3f} m, {data['triangles']} triangles, {data['bytes']} bytes")
+              print(f"{name}: {data['height_m']:.3f} m source, {data['triangles']} triangles, {data['bytes']/1048576:.2f} MB, {data['animation_count']} clips")
           PY
-
-      - name: Upload generated GLB models for inspection
+      - name: Upload optimized GLB character assets
         uses: actions/upload-artifact@v4
         with:
           name: eight-rigged-survival-skins
@@ -75,7 +79,6 @@ jobs:
             Models/Characters/SKIN_*.glb
             Models/Characters/manifest.json
           if-no-files-found: error
-
       - name: Commit generated character assets to the repository
         run: |
           git config user.name "github-actions[bot]"
@@ -84,7 +87,7 @@ jobs:
           if git diff --cached --quiet; then
             echo "No generated character assets changed."
           else
-            git commit -m "Add eight rigged survival character skins"
+            git commit -m "Rebuild and optimize eight rigged survival skins"
             git fetch origin main
             git rebase origin/main
             git push origin HEAD:main

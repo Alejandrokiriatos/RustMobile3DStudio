@@ -1,54 +1,55 @@
 extends Node3D
 
-# The gallery now displays exported, rigged GLB characters. Appearance is modular;
-# the gameplay collision capsule stays identical for every cosmetic skin.
+# Preview scene for the eight rigged GLB skins. Gameplay dimensions stay independent.
 const PLAYER_HEIGHT := 1.75
 const HITBOX_RADIUS := 0.32
 const HITBOX_HEIGHT := 1.75
-
-const SKINS := [
-	{"name":"SKIN 01","path":"res://Models/Characters/SKIN_01.glb"},
-	{"name":"SKIN 02","path":"res://Models/Characters/SKIN_02.glb"},
-	{"name":"SKIN 03","path":"res://Models/Characters/SKIN_03.glb"},
-	{"name":"SKIN 04","path":"res://Models/Characters/SKIN_04.glb"},
-	{"name":"SKIN 05","path":"res://Models/Characters/SKIN_05.glb"},
-	{"name":"SKIN 06","path":"res://Models/Characters/SKIN_06.glb"},
-	{"name":"SKIN 07","path":"res://Models/Characters/SKIN_07.glb"},
-	{"name":"SKIN 08","path":"res://Models/Characters/SKIN_08.glb"}
-]
+const SKIN_IDS := ["SKIN_01", "SKIN_02", "SKIN_03", "SKIN_04", "SKIN_05", "SKIN_06", "SKIN_07", "SKIN_08"]
 
 func _ready() -> void:
-	print("CHARACTER_GALLERY_READY: loading eight rigged GLB skins")
+	print("CHARACTER_GALLERY_READY; loading eight rigged GLB skins")
 	_build_stage()
 	var manifest := _load_manifest()
-	for i in range(SKINS.size()):
-		var row: Dictionary = SKINS[i]
-		var row_index := i / 4
-		var col_index := i % 4
-		var position := Vector3((col_index - 1.5) * 2.25, 0.0, (row_index - 0.5) * 2.35)
-		_build_character(row, position, manifest)
+	var rows: Dictionary = manifest.get("skins", {})
+	for i in SKIN_IDS.size():
+		var row := i / 4
+		var col := i % 4
+		var x := (float(col) - 1.5) * 2.4
+		var z := (0.5 - float(row)) * 3.0
+		_build_character(SKIN_IDS[i], Vector3(x, 0.0, z), rows)
 	if OS.get_environment("CAPTURE_CHARACTERS") == "1":
 		call_deferred("_capture_preview")
-
 
 func _load_manifest() -> Dictionary:
 	var path := "res://Models/Characters/manifest.json"
 	if not FileAccess.file_exists(path):
 		push_error("Character manifest is missing: " + path)
 		return {}
-	var parsed = JSON.parse_string(FileAccess.get_file_as_string(path))
+	var parsed: Variant = JSON.parse_string(FileAccess.get_file_as_string(path))
 	if typeof(parsed) != TYPE_DICTIONARY:
-		push_error("Character manifest is not valid JSON.")
+		push_error("Character manifest is not a JSON object")
 		return {}
-	return parsed
+	return parsed as Dictionary
 
+func _build_character(skin_id: String, origin: Vector3, rows: Dictionary) -> void:
+	var scene_path := "res://Models/Characters/" + skin_id + ".glb"
+	var packed := ResourceLoader.load(scene_path) as PackedScene
+	if packed == null:
+		push_error("Unable to import character model: " + scene_path)
+		return
 
-func _build_character(data: Dictionary, origin: Vector3, manifest: Dictionary) -> void:
+	var record: Dictionary = rows.get(skin_id, {})
+	var source_height := float(record.get("height_m", PLAYER_HEIGHT))
+	if source_height <= 0.1:
+		source_height = PLAYER_HEIGHT
+	var uniform_scale := PLAYER_HEIGHT / source_height
+
 	var player := CharacterBody3D.new()
-	player.name = str(data.name).replace(" ", "_")
+	player.name = skin_id
 	player.position = origin
 	add_child(player)
 
+	# One shared capsule for every skin; cosmetic choice never changes gameplay.
 	var collision := CollisionShape3D.new()
 	var capsule := CapsuleShape3D.new()
 	capsule.radius = HITBOX_RADIUS
@@ -57,78 +58,111 @@ func _build_character(data: Dictionary, origin: Vector3, manifest: Dictionary) -
 	collision.position.y = HITBOX_HEIGHT * 0.5
 	player.add_child(collision)
 
-	var skin_metrics: Dictionary = manifest.get("skins", {}).get(str(data.name).replace(" ", "_"), {})
-	var model_height := float(skin_metrics.get("height_m", PLAYER_HEIGHT))
-	if model_height <= 0.01:
-		model_height = PLAYER_HEIGHT
-	var model_scale := PLAYER_HEIGHT / model_height
-
-	var resource = load(str(data.path))
-	if resource == null or not (resource is PackedScene):
-		push_error("Could not load rigged character: " + str(data.path))
+	var visual := packed.instantiate() as Node3D
+	if visual == null:
+		push_error("Imported GLB root is not Node3D: " + scene_path)
+		player.queue_free()
 		return
-	var character_scene := resource as PackedScene
-	var character_model := character_scene.instantiate() as Node3D
-	if character_model == null:
-		push_error("GLB scene root is not Node3D: " + str(data.path))
-		return
-	character_model.name = "CharacterModel"
-	character_model.scale = Vector3.ONE * model_scale
-	player.add_child(character_model)
+	visual.name = "VisualModel"
+	visual.scale = Vector3.ONE * uniform_scale
+	player.add_child(visual)
+	_play_idle(visual)
+	_add_pedestal(origin)
 
 	var label := Label3D.new()
-	label.text = str(data.name).replace("_", " ")
-	label.position = Vector3(0, PLAYER_HEIGHT + 0.18, 0)
-	label.font_size = 30
+	label.name = "SkinLabel"
+	label.text = skin_id.replace("_", " ")
+	label.position = Vector3(0.0, 1.98, 0.0)
+	label.font_size = 42
 	label.pixel_size = 0.004
 	label.billboard = BaseMaterial3D.BILLBOARD_ENABLED
-	label.modulate = Color("#f2eee5")
+	label.modulate = Color("#f1eee6")
+	label.outline_size = 8
+	label.outline_modulate = Color("#172024")
 	player.add_child(label)
 
-	print(str(data.name), " loaded | original_height=", model_height, " | scale=", model_scale, " | hitbox=", HITBOX_HEIGHT, " x ", HITBOX_RADIUS)
+	print(skin_id, ": imported; scale=", uniform_scale,
+		"; source height=", source_height,
+		"; triangles=", int(record.get("triangles", 0)),
+		"; package MB=", snappedf(float(record.get("bytes", 0)) / 1048576.0, 0.01))
 
+func _play_idle(root: Node) -> void:
+	var animation_player := _find_animation_player(root)
+	if animation_player == null:
+		push_warning("No AnimationPlayer found in " + root.name)
+		return
+	var clips := animation_player.get_animation_list()
+	if clips.has("Idle"):
+		animation_player.play("Idle")
+	elif clips.size() > 0:
+		animation_player.play(clips[0])
+
+func _find_animation_player(node: Node) -> AnimationPlayer:
+	if node is AnimationPlayer:
+		return node as AnimationPlayer
+	for child in node.get_children():
+		var found := _find_animation_player(child)
+		if found != null:
+			return found
+	return null
+
+func _add_pedestal(origin: Vector3) -> void:
+	var base := MeshInstance3D.new()
+	var cylinder := CylinderMesh.new()
+	cylinder.top_radius = 0.55
+	cylinder.bottom_radius = 0.57
+	cylinder.height = 0.075
+	cylinder.radial_segments = 40
+	base.mesh = cylinder
+	base.material_override = _material(Color("#465054"), 0.72, 0.12)
+	base.position = origin
+	add_child(base)
+
+func _material(color: Color, roughness := 0.84, metallic := 0.0) -> StandardMaterial3D:
+	var material := StandardMaterial3D.new()
+	material.albedo_color = color
+	material.roughness = roughness
+	material.metallic = metallic
+	return material
 
 func _build_stage() -> void:
 	var floor := MeshInstance3D.new()
 	var plane := PlaneMesh.new()
-	plane.size = Vector2(12.0, 8.5)
+	plane.size = Vector2(13.0, 9.0)
 	floor.mesh = plane
-	var floor_material := StandardMaterial3D.new()
-	floor_material.albedo_color = Color("#343b3b")
-	floor_material.roughness = 0.92
-	floor.material_override = floor_material
-	floor.position = Vector3(0, -0.025, 0)
+	floor.material_override = _material(Color("#303a3d"))
+	floor.position = Vector3(0.0, -0.055, 0.0)
 	add_child(floor)
 
 	var world := WorldEnvironment.new()
 	var environment := Environment.new()
 	environment.background_mode = Environment.BG_COLOR
-	environment.background_color = Color("#20282b")
+	environment.background_color = Color("#1e292d")
 	environment.ambient_light_source = Environment.AMBIENT_SOURCE_COLOR
-	environment.ambient_light_color = Color("#c6d0cf")
-	environment.ambient_light_energy = 0.82
+	environment.ambient_light_color = Color("#c3ccca")
+	environment.ambient_light_energy = 0.78
 	world.environment = environment
 	add_child(world)
 
 	var key := DirectionalLight3D.new()
-	key.rotation_degrees = Vector3(-48, -28, 0)
-	key.light_energy = 1.55
+	key.rotation_degrees = Vector3(-42.0, -24.0, 0.0)
+	key.light_energy = 1.35
 	key.shadow_enabled = true
 	add_child(key)
 
 	var fill := DirectionalLight3D.new()
-	fill.rotation_degrees = Vector3(-18, 145, 0)
+	fill.rotation_degrees = Vector3(-18.0, 145.0, 0.0)
 	fill.light_energy = 0.52
 	fill.shadow_enabled = false
 	add_child(fill)
 
 	var camera := Camera3D.new()
-	camera.position = Vector3(0, 4.0, 11.2)
-	camera.rotation_degrees = Vector3(-20, 0, 0)
-	camera.fov = 42
-	camera.current = true
+	camera.projection = Camera3D.PROJECTION_ORTHOGONAL
+	camera.size = 6.25
+	camera.position = Vector3(0.0, 4.25, 12.5)
 	add_child(camera)
-
+	camera.look_at(Vector3(0.0, 0.95, 0.0), Vector3.UP)
+	camera.current = true
 
 func _capture_preview() -> void:
 	print("CHARACTER_CAPTURE_WAITING")
