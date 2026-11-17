@@ -4,7 +4,7 @@ extends Node3D
 
 const TERRAIN_SIZE := 18.0
 const TERRAIN_SUBDIVISIONS := 48
-const GRASS_COUNT := 1150
+const GRASS_COUNT := 3800
 const PATCH_RADIUS := 8.45
 
 var rng := RandomNumberGenerator.new()
@@ -84,18 +84,20 @@ func _make_grass_clump() -> ArrayMesh:
 	var st := SurfaceTool.new()
 	st.begin(Mesh.PRIMITIVE_TRIANGLES)
 	var blade_colors := [
-		Color(0.20, 0.34, 0.105),
-		Color(0.30, 0.47, 0.14),
-		Color(0.39, 0.53, 0.18),
-		Color(0.24, 0.40, 0.12)
+		Color(0.17, 0.30, 0.085),
+		Color(0.23, 0.39, 0.105),
+		Color(0.30, 0.47, 0.13),
+		Color(0.38, 0.53, 0.16),
+		Color(0.25, 0.42, 0.105),
+		Color(0.20, 0.36, 0.09)
 	]
-	for blade in range(4):
-		var angle := float(blade) * PI * 0.5 + 0.18
+	for blade in range(6):
+		var angle := float(blade) * TAU / 6.0 + 0.18
 		var direction := Vector3(cos(angle), 0.0, sin(angle))
 		var side := Vector3(-direction.z, 0.0, direction.x)
-		var height := 0.28 + 0.13 * float(blade % 3)
-		var width := 0.055 + 0.012 * float(blade % 2)
-		var lean := direction * (0.07 + 0.025 * float(blade % 2))
+		var height := 0.31 + 0.105 * float(blade % 4)
+		var width := 0.065 + 0.012 * float(blade % 2)
+		var lean := direction * (0.075 + 0.03 * float(blade % 2))
 		var base := Vector3.ZERO
 		var left := base - side * width * 0.5
 		var right := base + side * width * 0.5
@@ -142,13 +144,13 @@ func _build_grass() -> void:
 		multimesh.set_instance_transform(i, Transform3D(basis, Vector3(x, y, z)))
 	grass.multimesh = multimesh
 	grass.material_override = grass_material
-	grass.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_ON
+	# Dense grass keeps shadows disabled to reduce mobile GPU cost.
 	add_child(grass)
 
 func _build_camera() -> void:
 	var camera := Camera3D.new()
 	camera.name = "ShowcaseCamera"
-	camera.position = Vector3(10.8, 8.2, 12.5)
+	camera.position = Vector3(10.2, 7.6, 11.8)
 	camera.fov = 48.0
 	camera.current = true
 	add_child(camera)
