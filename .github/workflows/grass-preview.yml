@@ -52,3 +52,5 @@ jobs:
             git commit -m "Add real Godot grass terrain preview"
             git push
           fi
+
+# Re-render preview after grass density update.
