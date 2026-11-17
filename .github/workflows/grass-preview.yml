@@ -4,8 +4,8 @@ on:
   push:
     branches: [main]
     paths:
-      - 'Scripts/**'
-      - 'DemoScenes/**'
+      - 'Scripts/GrassTerrain/**'
+      - 'DemoScenes/GrassTerrain/**'
       - 'project.godot'
       - '.github/workflows/grass-preview.yml'
   workflow_dispatch:
@@ -16,6 +16,7 @@ permissions:
 jobs:
   render:
     runs-on: ubuntu-latest
+    timeout-minutes: 5
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -31,10 +32,10 @@ jobs:
           unzip -q Godot_v4.4.1-stable_linux.x86_64.zip
           chmod +x Godot_v4.4.1-stable_linux.x86_64
 
-      - name: Render real screenshot from the Godot scene
+      - name: Render the actual grass test scene
         run: |
           mkdir -p Screenshots
-          xvfb-run -a env CAPTURE_PREVIEW=1 LIBGL_ALWAYS_SOFTWARE=1 ./Godot_v4.4.1-stable_linux.x86_64 --path . --rendering-method gl_compatibility
+          timeout 90s xvfb-run -a env CAPTURE_PREVIEW=1 LIBGL_ALWAYS_SOFTWARE=1 ./Godot_v4.4.1-stable_linux.x86_64 --path . --rendering-method gl_compatibility res://DemoScenes/GrassTerrain/grass_test.tscn
 
       - name: Upload screenshot artifact
         uses: actions/upload-artifact@v4
@@ -52,5 +53,3 @@ jobs:
             git commit -m "Add real Godot grass terrain preview"
             git push
           fi
-
-# Re-render preview after grass density update.
