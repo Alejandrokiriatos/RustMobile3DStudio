@@ -112,6 +112,9 @@ func _build_skin(data: Dictionary, origin: Vector3) -> void:
 		_sphere(player, skin, Vector3(0, 1.415, 0), Vector3(0.225, 0.17, 0.135))
 		for side in [-1.0, 1.0]:
 			_sphere(player, skin, Vector3(side * 0.22, 1.405, 0), Vector3(0.115, 0.12, 0.12))
+
+	# Brazos y manos, iguales para ambas siluetas.
+	for side in [-1.0, 1.0]:
 		_capsule(player, skin, Vector3(side * 0.255, 1.19, 0.0), 0.56, 0.083, Vector3(0, 0, side * -0.10))
 		_capsule(player, skin, Vector3(side * 0.27, 0.855, 0.015), 0.20, 0.061)
 		_sphere(player, skin, Vector3(side * 0.27, 0.765, 0.025), Vector3(0.067, 0.07, 0.065))
