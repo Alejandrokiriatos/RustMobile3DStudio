@@ -166,7 +166,9 @@ func _build_stage() -> void:
 		add_child(marker)
 
 func _capture_preview() -> void:
-	await get_tree().create_timer(2.0).timeout
+	await get_tree().create_timer(3.0).timeout
 	var image := get_viewport().get_texture().get_image()
-	image.save_png("res://Screenshots/eight_characters_godot.png")
+	var output_path := ProjectSettings.globalize_path("res://Screenshots/eight_characters_godot.png")
+	var error := image.save_png(output_path)
+	print("CHARACTER_SCREENSHOT path=", output_path, " error=", error, " size=", image.get_size())
 	get_tree().quit()
