@@ -66,7 +66,7 @@ func _build_person(data: Dictionary, origin: Vector3) -> void:
 	var pants := _mat(data.pants)
 	var accent := _mat(data.accent)
 	var dark := _mat(Color("#282522"))
-	var is_female := data.gender == "M"
+	var is_female: bool = str(data["gender"]) == "M"
 	var torso_width := 0.34 if is_female else 0.39
 	var hip_width := 0.31 if is_female else 0.34
 
