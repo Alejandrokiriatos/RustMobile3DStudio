@@ -2,7 +2,7 @@ extends Node3D
 ## Procedural vegetation library. All pieces are actual Godot MeshInstance3D meshes.
 const TREES := [
  ["TREE_01_PINE","Pino","pine",5.8,"315b3b"],["TREE_02_OAK","Roble","round",5.2,"477b39"],
- ["TREE_03_BIRCH","Abedul","round",5.0,"6b9148"],["TREE_04_WILLOW","Sauce","willow",5.1,"789b3c"],
+ ["TREE_03_BIRCH","Abedul","birch",5.0,"6b9148"],["TREE_04_WILLOW","Sauce","willow",5.1,"789b3c"],
  ["TREE_05_PALM","Palmera","palm",6.2,"39834a"],["TREE_06_DEAD","Árbol muerto","dead",4.7,"786044"],
  ["TREE_07_MAPLE","Arce otoñal","autumn",5.3,"c65a24"],["TREE_08_BANANA","Banano","banana",4.2,"5b9b32"],
  ["TREE_09_CYPRESS","Ciprés","cypress",6.0,"28543d"],["TREE_10_ACACIA","Acacia","acacia",4.8,"789448"],
@@ -144,8 +144,8 @@ func _build_stage() -> void:
  camera.projection=Camera3D.PROJECTION_ORTHOGONAL
  camera.size=37.0
  camera.position=Vector3(0,20,43)
- camera.look_at(Vector3(0,2,10),Vector3.UP)
  add_child(camera)
+ camera.look_at(Vector3(0,2,10),Vector3.UP)
  camera.current=true
  if OS.get_environment("CAPTURE_VEGETATION")=="1":
   _capture_preview.call_deferred()
