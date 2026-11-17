@@ -6,50 +6,90 @@
     "SKIN_01": {
       "height_m": 1.812841033935547,
       "triangles": 40084,
-      "bytes": 26965644,
-      "gender": "male"
+      "bytes": 7367980,
+      "gender": "male",
+      "animation_count": 29
     },
     "SKIN_02": {
       "height_m": 1.67114315032959,
       "triangles": 41224,
-      "bytes": 26910848,
-      "gender": "female"
+      "bytes": 7313236,
+      "gender": "female",
+      "animation_count": 29
     },
     "SKIN_03": {
       "height_m": 1.871540641784668,
       "triangles": 37798,
-      "bytes": 26960088,
-      "gender": "male"
+      "bytes": 7362436,
+      "gender": "male",
+      "animation_count": 29
     },
     "SKIN_04": {
       "height_m": 1.6755616188049318,
       "triangles": 42634,
-      "bytes": 27012756,
-      "gender": "female"
+      "bytes": 7415032,
+      "gender": "female",
+      "animation_count": 29
     },
     "SKIN_05": {
       "height_m": 1.7438019752502443,
       "triangles": 38932,
-      "bytes": 27363592,
-      "gender": "male"
+      "bytes": 7765588,
+      "gender": "male",
+      "animation_count": 29
     },
     "SKIN_06": {
       "height_m": 1.7243369102478028,
       "triangles": 42468,
-      "bytes": 26965676,
-      "gender": "female"
+      "bytes": 7368016,
+      "gender": "female",
+      "animation_count": 29
     },
     "SKIN_07": {
       "height_m": 1.8230046272277833,
       "triangles": 48632,
-      "bytes": 26875124,
-      "gender": "male"
+      "bytes": 7277540,
+      "gender": "male",
+      "animation_count": 29
     },
     "SKIN_08": {
       "height_m": 1.7003259658813477,
       "triangles": 70386,
-      "bytes": 26965788,
-      "gender": "female"
+      "bytes": 7368128,
+      "gender": "female",
+      "animation_count": 29
     }
-  }
+  },
+  "optimized_for_mobile": true,
+  "retained_animation_clips": [
+    "Climb ladder down",
+    "Climb ladder up",
+    "Crouch idle",
+    "Death (fall backward)",
+    "Death (fall forward)",
+    "Fall",
+    "Get up (from back)",
+    "Hit reaction",
+    "Idle",
+    "Jump",
+    "Jump (in air)",
+    "Jump land",
+    "Jump start",
+    "Pick up (ground)",
+    "Punch",
+    "Rifle fire (single)",
+    "Rifle idle (low ready)",
+    "Rifle reload",
+    "Rifle run",
+    "Rifle walk (aiming)",
+    "Run",
+    "Strafe left",
+    "Strafe right",
+    "Swim breaststroke",
+    "Swim forward (front crawl)",
+    "Tread water",
+    "Vault over obstacle",
+    "Walk",
+    "Walk backwards"
+  ]
 }
