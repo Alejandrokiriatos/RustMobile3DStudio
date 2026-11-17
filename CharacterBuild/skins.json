@@ -1,0 +1,310 @@
+[
+  {
+    "id": "SKIN_01",
+    "params": {
+      "gender": 1,
+      "age": 0.55,
+      "muscle": 0.62,
+      "weight": 0.46,
+      "height": 0.55,
+      "proportions": 0.82,
+      "african": 0.08,
+      "asian": 0.08,
+      "caucasian": 0.84,
+      "breastSize": 0.5,
+      "skin": "auto",
+      "hair": "short02",
+      "hairTint": "#38261d",
+      "hairColor": "#38261d",
+      "eyes": "brown",
+      "eyebrows": "eyebrow001",
+      "eyelashes": "none",
+      "facialHair": "none",
+      "outfit": "none",
+      "top": "none",
+      "bottom": "survival_shorts",
+      "underwear": true,
+      "shoes": "none",
+      "hat": "none",
+      "accessories": [],
+      "garmentStyles": {
+        "survival_shorts": {
+          "pattern": "solid",
+          "color": "#526457"
+        }
+      }
+    }
+  },
+  {
+    "id": "SKIN_02",
+    "params": {
+      "gender": 0,
+      "age": 0.53,
+      "muscle": 0.48,
+      "weight": 0.46,
+      "height": 0.55,
+      "proportions": 0.86,
+      "african": 0.12,
+      "asian": 0.18,
+      "caucasian": 0.7,
+      "breastSize": 0.48,
+      "breastFirmness": 0.68,
+      "skin": "auto",
+      "hair": "long01",
+      "hairTint": "#4a2c20",
+      "hairColor": "#4a2c20",
+      "eyes": "brownlight",
+      "eyebrows": "eyebrow010",
+      "eyelashes": "eyelashes02",
+      "facialHair": "none",
+      "outfit": "none",
+      "top": "sports_bra",
+      "bottom": "survival_shorts",
+      "underwear": true,
+      "shoes": "none",
+      "hat": "none",
+      "accessories": [],
+      "garmentStyles": {
+        "sports_bra": {
+          "pattern": "solid",
+          "color": "#526c59"
+        },
+        "survival_shorts": {
+          "pattern": "solid",
+          "color": "#66513b"
+        }
+      }
+    }
+  },
+  {
+    "id": "SKIN_03",
+    "params": {
+      "gender": 1,
+      "age": 0.55,
+      "muscle": 0.78,
+      "weight": 0.52,
+      "height": 0.55,
+      "proportions": 0.78,
+      "african": 0.88,
+      "asian": 0.04,
+      "caucasian": 0.08,
+      "breastSize": 0.5,
+      "skin": "auto",
+      "hair": "short04",
+      "hairTint": "#211b18",
+      "hairColor": "#211b18",
+      "eyes": "blackbrown",
+      "eyebrows": "eyebrow001",
+      "eyelashes": "none",
+      "facialHair": "none",
+      "outfit": "none",
+      "top": "none",
+      "bottom": "survival_shorts",
+      "underwear": true,
+      "shoes": "none",
+      "hat": "none",
+      "accessories": [],
+      "garmentStyles": {
+        "survival_shorts": {
+          "pattern": "solid",
+          "color": "#303831"
+        }
+      }
+    }
+  },
+  {
+    "id": "SKIN_04",
+    "params": {
+      "gender": 0,
+      "age": 0.54,
+      "muscle": 0.53,
+      "weight": 0.52,
+      "height": 0.55,
+      "proportions": 0.82,
+      "african": 0.1,
+      "asian": 0.12,
+      "caucasian": 0.78,
+      "breastSize": 0.56,
+      "breastFirmness": 0.72,
+      "skin": "auto",
+      "hair": "braid01",
+      "hairTint": "#382a22",
+      "hairColor": "#382a22",
+      "eyes": "green",
+      "eyebrows": "eyebrow010",
+      "eyelashes": "eyelashes02",
+      "facialHair": "none",
+      "outfit": "none",
+      "top": "sports_bra",
+      "bottom": "survival_shorts",
+      "underwear": true,
+      "shoes": "none",
+      "hat": "none",
+      "accessories": [],
+      "garmentStyles": {
+        "sports_bra": {
+          "pattern": "solid",
+          "color": "#a45e37"
+        },
+        "survival_shorts": {
+          "pattern": "solid",
+          "color": "#414b5a"
+        }
+      }
+    }
+  },
+  {
+    "id": "SKIN_05",
+    "params": {
+      "gender": 1,
+      "age": 0.56,
+      "muscle": 0.58,
+      "weight": 0.59,
+      "height": 0.55,
+      "proportions": 0.77,
+      "african": 0.2,
+      "asian": 0.72,
+      "caucasian": 0.08,
+      "breastSize": 0.5,
+      "skin": "auto",
+      "hair": "afro01",
+      "hairTint": "#38251f",
+      "hairColor": "#38251f",
+      "eyes": "brown",
+      "eyebrows": "eyebrow001",
+      "eyelashes": "none",
+      "facialHair": "none",
+      "outfit": "none",
+      "top": "none",
+      "bottom": "survival_shorts",
+      "underwear": true,
+      "shoes": "none",
+      "hat": "none",
+      "accessories": [],
+      "garmentStyles": {
+        "survival_shorts": {
+          "pattern": "solid",
+          "color": "#4c4648"
+        }
+      }
+    }
+  },
+  {
+    "id": "SKIN_06",
+    "params": {
+      "gender": 0,
+      "age": 0.53,
+      "muscle": 0.62,
+      "weight": 0.48,
+      "height": 0.55,
+      "proportions": 0.85,
+      "african": 0.78,
+      "asian": 0.08,
+      "caucasian": 0.14,
+      "breastSize": 0.52,
+      "breastFirmness": 0.72,
+      "skin": "auto",
+      "hair": "ponytail01",
+      "hairTint": "#251c19",
+      "hairColor": "#251c19",
+      "eyes": "brownlight",
+      "eyebrows": "eyebrow010",
+      "eyelashes": "eyelashes02",
+      "facialHair": "none",
+      "outfit": "none",
+      "top": "sports_bra",
+      "bottom": "survival_shorts",
+      "underwear": true,
+      "shoes": "none",
+      "hat": "none",
+      "accessories": [],
+      "garmentStyles": {
+        "sports_bra": {
+          "pattern": "solid",
+          "color": "#687b63"
+        },
+        "survival_shorts": {
+          "pattern": "solid",
+          "color": "#514c3c"
+        }
+      }
+    }
+  },
+  {
+    "id": "SKIN_07",
+    "params": {
+      "gender": 1,
+      "age": 0.57,
+      "muscle": 0.66,
+      "weight": 0.66,
+      "height": 0.55,
+      "proportions": 0.74,
+      "african": 0.25,
+      "asian": 0.08,
+      "caucasian": 0.67,
+      "breastSize": 0.5,
+      "skin": "auto",
+      "hair": "buzz",
+      "hairTint": "#211c1a",
+      "hairColor": "#211c1a",
+      "eyes": "grey",
+      "eyebrows": "eyebrow001",
+      "eyelashes": "none",
+      "facialHair": "none",
+      "outfit": "none",
+      "top": "none",
+      "bottom": "survival_shorts",
+      "underwear": true,
+      "shoes": "none",
+      "hat": "none",
+      "accessories": [],
+      "garmentStyles": {
+        "survival_shorts": {
+          "pattern": "solid",
+          "color": "#303831"
+        }
+      }
+    }
+  },
+  {
+    "id": "SKIN_08",
+    "params": {
+      "gender": 0,
+      "age": 0.54,
+      "muscle": 0.5,
+      "weight": 0.58,
+      "height": 0.55,
+      "proportions": 0.83,
+      "african": 0.52,
+      "asian": 0.14,
+      "caucasian": 0.34,
+      "breastSize": 0.55,
+      "breastFirmness": 0.68,
+      "skin": "auto",
+      "hair": "box_braids",
+      "hairTint": "#67402d",
+      "hairColor": "#67402d",
+      "eyes": "brown",
+      "eyebrows": "eyebrow010",
+      "eyelashes": "eyelashes02",
+      "facialHair": "none",
+      "outfit": "none",
+      "top": "sports_bra",
+      "bottom": "survival_shorts",
+      "underwear": true,
+      "shoes": "none",
+      "hat": "none",
+      "accessories": [],
+      "garmentStyles": {
+        "sports_bra": {
+          "pattern": "solid",
+          "color": "#a45e37"
+        },
+        "survival_shorts": {
+          "pattern": "solid",
+          "color": "#414b5a"
+        }
+      }
+    }
+  }
+]
