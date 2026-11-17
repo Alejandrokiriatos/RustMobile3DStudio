@@ -15,6 +15,7 @@ var rng := RandomNumberGenerator.new()
 
 func _ready() -> void:
  rng.seed = 91427
+ _build_stage()
  for i in TREES.size():
   var d = TREES[i]
   var item = create_tree(d[0])
@@ -116,3 +117,44 @@ func _add(parent:Node3D,mesh:Mesh,mat:Material,pos:Vector3) -> MeshInstance3D:
  var n=MeshInstance3D.new(); n.mesh=mesh; n.material_override=mat; n.position=pos
  if mesh.has_meta("veg_scale"): n.scale=mesh.get_meta("veg_scale")
  parent.add_child(n); return n
+
+func _build_stage() -> void:
+ var env=WorldEnvironment.new()
+ var e=Environment.new()
+ e.background_mode=Environment.BG_COLOR
+ e.background_color=Color("#b8c2c0")
+ e.ambient_light_source=Environment.AMBIENT_SOURCE_COLOR
+ e.ambient_light_color=Color("#dce5df")
+ e.ambient_light_energy=0.8
+ env.environment=e
+ add_child(env)
+ var light=DirectionalLight3D.new()
+ light.rotation_degrees=Vector3(-48,-28,0)
+ light.light_energy=1.25
+ light.shadow_enabled=true
+ add_child(light)
+ var floor_mesh=PlaneMesh.new()
+ floor_mesh.size=Vector2(38,38)
+ var floor_node=MeshInstance3D.new()
+ floor_node.mesh=floor_mesh
+ floor_node.position=Vector3(0,-0.05,10)
+ floor_node.material_override=_material(Color("#777d70"))
+ add_child(floor_node)
+ var camera=Camera3D.new()
+ camera.projection=Camera3D.PROJECTION_ORTHOGONAL
+ camera.size=37.0
+ camera.position=Vector3(0,20,43)
+ camera.look_at(Vector3(0,2,10),Vector3.UP)
+ add_child(camera)
+ camera.current=true
+ if OS.get_environment("CAPTURE_VEGETATION")=="1":
+  _capture_preview.call_deferred()
+
+func _capture_preview() -> void:
+ await get_tree().create_timer(3.0).timeout
+ await RenderingServer.frame_post_draw
+ var image=get_viewport().get_texture().get_image()
+ var path=ProjectSettings.globalize_path("res://Screenshots/vegetation_gallery_godot.png")
+ var err=image.save_png(path)
+ print("VEGETATION_CAPTURE path=",path," error=",err," size=",image.get_size())
+ get_tree().quit()
