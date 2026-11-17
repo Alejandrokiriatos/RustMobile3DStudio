@@ -15,6 +15,8 @@ func _ready() -> void:
 	_build_terrain()
 	_build_grass()
 	_build_camera()
+	if OS.get_environment("CAPTURE_PREVIEW") == "1":
+		_capture_preview()
 
 func _terrain_height(x: float, z: float) -> float:
 	return 0.12 * sin(x * 0.62) * cos(z * 0.48) + 0.045 * sin(z * 1.35 + x * 0.3)
@@ -151,3 +153,9 @@ func _build_camera() -> void:
 	camera.current = true
 	add_child(camera)
 	camera.look_at(Vector3(0.0, 0.0, 0.0), Vector3.UP)
+
+func _capture_preview() -> void:
+	await get_tree().create_timer(2.5).timeout
+	var image := get_viewport().get_texture().get_image()
+	image.save_png("res://Screenshots/grass_terrain_godot.png")
+	get_tree().quit()
