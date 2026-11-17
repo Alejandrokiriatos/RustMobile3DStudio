@@ -1,0 +1,80 @@
+name: Build realistic survival character skins
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'CharacterBuild/**'
+      - '.github/workflows/build-character-models.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  generate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 35
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      - name: Download the open-source character generator
+        run: git clone --depth 1 https://github.com/olatunde85/3d-gen.git generator
+
+      - name: Install generator dependencies
+        working-directory: generator
+        run: npm ci
+
+      - name: Add project-specific sports bra and plain survival shorts
+        working-directory: generator
+        run: node ../CharacterBuild/patch-generator.mjs
+
+      - name: Fetch CC0 MakeHuman anatomy, clothing and hair assets
+        working-directory: generator
+        run: npx tsx scripts/setup-assets.ts
+
+      - name: Type-check the patched character generator
+        working-directory: generator
+        run: npm run typecheck
+
+      - name: Export eight rigged GLB character skins
+        working-directory: generator
+        run: |
+          cp ../CharacterBuild/export_skins.ts scripts/export-rust-skins.ts
+          npx tsx scripts/export-rust-skins.ts ../CharacterBuild/skins.json ../Models/Characters
+
+      - name: Validate all eight models and the manifest
+        run: |
+          python3 - <<'PY'
+          import json, pathlib, sys
+          root = pathlib.Path("Models/Characters")
+          manifest = json.loads((root / "manifest.json").read_text())
+          skins = manifest["skins"]
+          assert len(skins) == 8, f"Expected 8 manifest records, got {len(skins)}"
+          for i in range(1, 9):
+              name = f"SKIN_{i:02d}"
+              path = root / f"{name}.glb"
+              assert path.exists() and path.stat().st_size > 100_000, f"Missing/invalid {path}"
+              assert name in skins, f"Missing {name} metrics"
+          print("Validated eight GLB files.")
+          for name, data in skins.items():
+              print(f"{name}: {data['height_m']:.3f} m, {data['triangles']} triangles, {data['bytes']} bytes")
+          PY
+
+      - name: Commit generated character assets to the repository
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add Models/Characters/SKIN_*.glb Models/Characters/manifest.json
+          if git diff --cached --quiet; then
+            echo "No generated character assets changed."
+          else
+            git commit -m "Add eight rigged survival character skins"
+            git push origin HEAD:main
+          fi
